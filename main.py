@@ -1,15 +1,19 @@
 import numpy as np
 import cv2
 import keyboard
+from PIL import Image
 from mss import mss
 
 boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}
 
-geen = [44, 205, 175]
-yellow = [254, 247, 166]
-black = [0, 0, 0]
+geen = (44, 205, 175)
+yellow = (254, 247, 166)
+red = (255, 0, 0)
+black = (0, 0, 0)
 
 MSS = mss()
+
+press = False
 
 while True:
     screenshot = MSS.grab(boundingBox)
@@ -19,62 +23,67 @@ while True:
     firstGreenIndex = -1
     lastGreenIndex = -1
 
-    currentYellowIndex = -1
+    firstYellowIndex = -1
+
+    pixelArray = []
 
     for pixel in colourLine:
         currentPixelIndex = colourLine.index(pixel)
 
-        if (all(map(lambda x, y: (x - y) / 255 <= 0.1, pixel, geen))):
+        colour = black
+
+        if (all(map(lambda x, y: abs((x - y)) / 255 <= 0.1, pixel, geen))):
             if (firstGreenIndex == -1):
                 firstGreenIndex = currentPixelIndex
             lastGreenIndex = currentPixelIndex
 
-            pixel = geen
-            break
-                
+            colour = geen
 
-        if (all(map(lambda x, y: (x - y) / 255 <= 0.1, pixel, yellow))):
-            currentYellowIndex = currentPixelIndex
+        if (all(map(lambda x, y: abs((x - y)) / 255 <= 0.1, pixel, yellow))):
+            if (firstYellowIndex == -1):
+                firstYellowIndex = currentPixelIndex
 
-            pixel = yellow
-            break
+            if (pixel == geen):
+                colour = red
+            else:
+                colour = yellow
 
-        pixel = black
+        pixelArray.append(colour)
+
+    #print(pixelArray)
 
 # and all(map(lambda x: x >= 0, [firstGreenIndex, lastGreenIndex, currentYellowIndex]))
 
-    print([firstGreenIndex, lastGreenIndex, currentYellowIndex])
+    #print([firstGreenIndex, lastGreenIndex, firstYellowIndex])
 
-    if (currentYellowIndex < firstGreenIndex):
-        #keyboard.press_and_release('d')
-        print("d")
-    elif (currentYellowIndex > lastGreenIndex):
-        #keyboard.press_and_release('a')
-        print("a")
+    averageGreenIndex = (firstGreenIndex + lastGreenIndex) / 2
 
-    #greenCount = 0
-    #yellowCount = 0
-    #for pixel in colourLine:
-     #   for i in range(0,3):
-      #      if ((abs(pixel[i] - geen[i])) / 255 <= 0.1):
-       #         greenCount += 1
-#
- #           if ((abs(pixel[i] - yellow[i])) / 255 <= 0.1):
-  #              yellowCount += 1
-#
- #           if (greenCount == 3):
-  #              print("green")
-   #             greenCount = 0
-#
- #           if (yellowCount == 3):
-  #              print("yellow")
-   #             greenCount = 0
-    #    greenCount = 0
-     #   yellowCount = 0
+    print(averageGreenIndex)
 
-    # screenshot.pixels[10] = colourLine
+    if (firstYellowIndex < averageGreenIndex):
+        keyboard.release('a')
+        keyboard.press('d')
+        press = True
+        #print("d")
+    elif (firstYellowIndex > averageGreenIndex):
+        keyboard.release('d')
+        keyboard.press('a')
+        press = True
+        #print("a")
+    else:
+        #print("TEST")
+        press = False
 
-    print(len(colourLine))
-    cv2.imshow('capture', np.asarray(colourLine, dtype=np.float64))
+    #print(press)
+
+    if press == False:
+        keyboard.release('d')
+        keyboard.release('a')
+
+    img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "RGBX")
+
+    img.putdata(pixelArray * 10)
+
+    cv2.imshow('capture', np.array(img))
 
     cv2.waitKey(1)
