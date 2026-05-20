@@ -6,7 +6,7 @@ from mss import mss
 import time
 import mouse
 
-boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}fffffff
+boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}
 
 geen = (44, 205, 175)
 yellow = (254, 247, 166)
