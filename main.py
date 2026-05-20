@@ -3,6 +3,8 @@ import cv2
 import keyboard
 from PIL import Image
 from mss import mss
+import time
+import mouse
 
 boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}
 
@@ -14,6 +16,8 @@ black = (0, 0, 0)
 MSS = mss()
 
 press = False
+
+spammingF = False
 
 while True:
     screenshot = MSS.grab(boundingBox)
@@ -58,21 +62,31 @@ while True:
 
     averageGreenIndex = (firstGreenIndex + lastGreenIndex) / 2
 
-    print(averageGreenIndex)
+    #print(averageGreenIndex)
 
-    if (firstYellowIndex < averageGreenIndex):
-        keyboard.release('a')
-        keyboard.press('d')
-        press = True
-        #print("d")
-    elif (firstYellowIndex > averageGreenIndex):
-        keyboard.release('d')
-        keyboard.press('a')
-        press = True
-        #print("a")
+    if (all(map(lambda x: x >= 0, [firstGreenIndex, lastGreenIndex, firstGreenIndex]))):
+        spammingF = False
+        if (firstYellowIndex < averageGreenIndex):
+            keyboard.release('a')
+            keyboard.press('d')
+            press = True
+            #print("d")
+        elif (firstYellowIndex > averageGreenIndex):
+            keyboard.release('d')
+            keyboard.press('a')
+            press = True
+            #print("a")
+        else:
+            #print("TEST")
+            press = False
+    elif spammingF:
+        keyboard.press_and_release('f')
     else:
-        #print("TEST")
-        press = False
+        time.sleep(3)
+        mouse.move(50, 50)
+        mouse.click("left")
+        spammingF = True
+
 
     #print(press)
 
