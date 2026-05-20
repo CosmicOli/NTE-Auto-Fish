@@ -6,7 +6,7 @@ from mss import mss
 import time
 import mouse
 
-boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}
+boundingBox = {'top': 90, 'left': 810, 'width': 950, 'height': 20}fffffff
 
 geen = (44, 205, 175)
 yellow = (254, 247, 166)
@@ -82,7 +82,7 @@ while True:
     elif spammingF:
         keyboard.press_and_release('f')
     else:
-        time.sleep(3)
+        time.sleep(5)
         mouse.move(50, 50)
         mouse.click("left")
         spammingF = True
