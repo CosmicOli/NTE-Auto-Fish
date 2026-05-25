@@ -6,7 +6,9 @@ from mss import mss
 import time
 import mouse
 
+# TODO: create solution for automatic monitor resolution selection
 boundingBox = {"top": 90, "left": 810, "width": 950, "height": 20}
+# boundingBox = {"top": 136, "left": 1217, "width": 1425, "height": 28}
 
 geen = (44, 205, 175)
 yellow = (254, 247, 166)
