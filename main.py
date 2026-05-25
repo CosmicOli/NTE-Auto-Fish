@@ -12,6 +12,8 @@ from typing import Tuple
 boundingBox = {"top": 90, "left": 810, "width": 950, "height": 20}
 # boundingBox = {"top": 136, "left": 1217, "width": 1425, "height": 28}
 
+halfwayPoint = int(boundingBox["height"] / 2)
+
 geen = (44, 205, 175)
 yellow = (254, 247, 166)
 red = (255, 0, 0)
@@ -43,7 +45,7 @@ def colourEqual(
 while True:
     screenshot = MSS.grab(boundingBox)
 
-    colourLine = screenshot.pixels[10]
+    colourLine = screenshot.pixels[halfwayPoint]
 
     firstGreenIndex = -1
     lastGreenIndex = -1
@@ -116,7 +118,7 @@ while True:
 
     img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "RGBX")
 
-    img.putdata(pixelArray * 10)
+    img.putdata(pixelArray * halfwayPoint)
 
     cv2.imshow("capture", np.array(img))
 
