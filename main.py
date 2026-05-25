@@ -6,6 +6,8 @@ from mss import mss
 import time
 import mouse
 
+from typing import Tuple
+
 # TODO: create solution for automatic monitor resolution selection
 boundingBox = {"top": 90, "left": 810, "width": 950, "height": 20}
 # boundingBox = {"top": 136, "left": 1217, "width": 1425, "height": 28}
@@ -20,6 +22,23 @@ MSS = mss()
 press = False
 
 spammingF = False
+
+
+def colourEqual(
+    colour1: Tuple[int, ...], colour2: Tuple[int, ...], threshold=0.1
+) -> bool:
+    """compares two RGB colour values elementwise with threshold
+
+    Args:
+        pixelColour (integer tuple): first colour to compare, expects RGB 0-255
+        TestColour (integer tuple): second colour to compare, expects RGB 0-255
+        threshold (float, optional): percentage threshold value, 0-1. Defaults to 0.1.
+
+    Returns:
+        Bool:
+    """
+    return all(map(lambda x, y: abs(x - y) / 255 <= threshold, colour1, colour2))
+
 
 while True:
     screenshot = MSS.grab(boundingBox)
@@ -38,14 +57,14 @@ while True:
 
         colour = black
 
-        if all(map(lambda x, y: abs((x - y)) / 255 <= 0.1, pixel, geen)):
+        if colourEqual(pixel, geen):
             if firstGreenIndex == -1:
                 firstGreenIndex = currentPixelIndex
             lastGreenIndex = currentPixelIndex
 
             colour = geen
 
-        if all(map(lambda x, y: abs((x - y)) / 255 <= 0.1, pixel, yellow)):
+        if colourEqual(pixel, yellow):
             if firstYellowIndex == -1:
                 firstYellowIndex = currentPixelIndex
 
