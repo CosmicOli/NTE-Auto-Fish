@@ -87,7 +87,7 @@ while True:
 
     # print(averageGreenIndex)
 
-    if all(map(lambda x: x >= 0, [firstGreenIndex, lastGreenIndex, firstGreenIndex])):
+    if all(map(lambda x: x >= 0, [firstGreenIndex, lastGreenIndex, firstYellowIndex])):
         spammingF = False
         if firstYellowIndex < averageGreenIndex:
             keyboard.release("a")
